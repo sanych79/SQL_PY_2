@@ -10,7 +10,7 @@ select a.albom_name as "Название Альбома", a.albom_year as "Год выхода" --назван
 
 select t.track_name as "Название трэка", t.track_time as "Продолжительность трэка" --название и продолжительность самого длительного трека;
 	from music.track t 
-	order BY t.track_time desc limit 1
+	where t.track_time  = (select MAX(tt.track_time) from music.track tt )	
 
 	
 select t.track_name as "Название трэка", t.track_time as "Продолжительность трэка" --название треков, продолжительность которых не менее 3,5 минуты;
@@ -20,11 +20,15 @@ select t.track_name as "Название трэка", t.track_time as "Продолжительность трэк
 
 select c.collection_name as "Название сборника" --названия сборников, вышедших в период с 2018 по 2020 год включительно;
   from music.collection c 
- WHERE 	c.collection_year<=2020 and c.collection_year>=2018
+ WHERE 	c.collection_year between 2018 and 2020
 
-select	a.artist_name as "Имя артиста" --исполнители, чье имя состоит из 1 слова;
+select	a.artist_name as "Имя артиста" --исполнители, чье имя состоит из 1 слова - ВАРИАНТ 1
   FROM music.artist a
  WHERE position(' ' in a.artist_name) = 0
+ 
+ select	a.artist_name as "Имя артиста" --исполнители, чье имя состоит из 1 слова - ВАРИАНТ 2
+  FROM music.artist a
+ WHERE a.artist_name not like '% %'
 
 select	t.track_name  "Название тека" --название треков, которые содержат слово "мой"/"my".
   FROM music.track t
@@ -40,11 +44,6 @@ select g.ganre_name as "Жанр", count(ga.artist_id) as "количество исполнителей"-
   from ganre g 
    join ganre_artist ga on g.ganre_id = ga.ganre_id 
   group by g.ganre_name 
-
-
-select * --количество треков, вошедших в альбомы 2019-2020 годов;
-  from albom a 
- where a.albom_year <= 2020 and a.albom_year >=2019
 
 
 select count(*) as "Количество треков" --количество треков, вошедших в альбомы 2019-2020 годов;
